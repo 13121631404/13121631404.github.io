@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				box-sizing: border-box;
+			}
+			
+			ul,
+			li {
+				list-style: none;
+			}
+			
+			body {
+				overflow: hidden;
+				height: 100vh;
+			}
+			
+			#ye {
+				width: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				transition: 1s;
+			}
+			
+			#ye li {
+				height: 100vh;
+				width: 100%;
+				line-height: 100vh;
+				text-align: center;
+				font-size: 72px;
+			}
+			
+			#ye li:nth-child(1) {
+				background: red;
+				color: #fff;
+			}
+			
+			#ye li:nth-child(2) {
+				background: blue;
+				color: #fff;
+			}
+			
+			#ye li:nth-child(3) {
+				background: green;
+				color: #000;
+			}
+			
+			#ye li:nth-child(4) {
+				background: mistyrose;
+				color: #000;
+			}
+			
+			#ye li:nth-child(5) {
+				background: saddlebrown;
+				color: #fff;
+			}
+			
+			#dian {
+				position: fixed;
+				right: 20px;
+				top: 50%;
+				transform: translateY(-50%);
+				display: flex;
+				flex-direction: column;
+				height: 300px;
+				justify-content: space-around;
+			}
+			
+			#dian li {
+				background: #fff;
+				border-radius: 50%;
+				width: 50px;
+				height: 50px;
+			}
+			
+			.active {
+				background: yellow !important;
+			}
+			
+			#ye li p {
+				float: left;
+				width: 50%;
+				text-align: center;
+				line-height: 100vh;
+				font-size: 25px;
+				display: block;
+			}
+			
+			.active1 p:nth-child(1) {
+				animation: zuo 1s linear 0s both;
+			}
+			
+			.active1 p:nth-child(2) {
+				animation: you 1s linear 0s both;
+			}
+			
+			@keyframes zuo {
+				from {
+					transform: translateX(-50vw);
+				}
+				to {
+					transform: translateX(0);
+				}
+			}
+			
+			@keyframes you {
+				from {
+					transform: translateX(50vw);
+				}
+				to {
+					transform: translateX(0);
+				}
+			}
+			.sp{
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<ul id="ye">
+			<li>
+				<p></p>
+				<p>右</p>
+			</li>
+			<li>
+				<p></p>
+				<p>右</p>
+			</li>
+			<li>
+				<p>左</p>
+				<p>右</p>
+			</li>
+			<li>
+				<p>左</p>
+				<p>右</p>
+			</li>
+			<li>
+				<p>左</p>
+				<p>右</p>
+			</li>
+		</ul>
+
+		<ul id="dian">
+			<li class="active">
+
+			</li>
+			<li>
+
+			</li>
+			<li>
+
+			</li>
+			<li>
+			</li>
+			<li>
+			</li>
+		</ul>
+		<script type="text/javascript">
+			function $(el) {
+				var obj = document.querySelectorAll(el);
+				return obj.length > 1 ? obj : obj[0];
+			}
+
+			var scrollObj = {
+					index: 0,
+					active: true
+				},
+				isFirefox = typeof document.body.style.MozUserSelect != 'undefined'; //判断是否是火狐
+
+			$("#dian").addEventListener("click", function(e) {
+				var e = e || window.event,
+					now = e.target,
+					arr = $("#dian > li"),
+					ye = $("#ye > li");
+				if(now.nodeName == "UL") {
+					return
+				}
+
+				for(var i = 0, len = arr.length; i < len; i++) {
+					arr[i].classList.remove("active");
+					ye[i].classList.remove("active1");
+					if(now.compareDocumentPosition(arr[i]) == 0) {
+						scrollObj.index = i;
+						arr[i].classList.add("active");
+						ye[i].classList.add("active1");
+					}
+				}
+				$("#ye").style.top = -scrollObj.index * 100 + "vh";
+
+			})
+
+			document.addEventListener(isFirefox ? 'DOMMouseScroll' : "mousewheel", function(e) {
+
+				var x = e.wheelDelta ? e.wheelDelta / 120 : -(e.detail % 3 == 0 ? e.detail / 3 : e.detail),
+					yeList = $("#ye > li"),
+					arr = $("#dian > li");
+
+				if(scrollObj.active) {
+					scrollObj.active = false;
+					if(x == -1) {
+						scrollObj.index = scrollObj.index >= yeList.length - 1 ? scrollObj.index : scrollObj.index + 1;
+					} else {
+						scrollObj.index = scrollObj.index <= 0 ? scrollObj.index : scrollObj.index - 1;
+					}
+					setTimeout(function() {
+						scrollObj.active = true;
+					}, 1000)
+				}
+
+				for(var i = 0, len = arr.length; i < len; i++) {
+
+					if(i == scrollObj.index && i != 0) {
+						arr[i].classList.add("active");
+						yeList[i].classList.add("active1")
+					} else {
+						arr[i].classList.remove("active");
+						yeList[i].classList.remove("active1")
+					}
+				}
+
+				$("#ye").style.top = -scrollObj.index * 100 + "vh";
+			})
+		</script>
+	</body>
+
+</html>
